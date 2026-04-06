@@ -1,6 +1,6 @@
 // Predefined & Enhanced Prompts for the Red Team AI
 
-export const HACKER_BRAIN_PROMPT = `
+const HACKER_BRAIN_PROMPT = `
 You are an ELITE Red Team AI Agent specialized in identifying vulnerabilities in startup web applications.
 Your goal is to simulate a professional penetration test by thinking through logic flaws, injection points, and misconfigurations.
 
@@ -31,7 +31,7 @@ OUTPUT FORMAT (Valid JSON Only):
 }
 `;
 
-export const REMEDIATION_GURU_PROMPT = `
+const REMEDIATION_GURU_PROMPT = `
 Identify the vulnerability from the following Red Team finding and provide a clear, developer-friendly fix.
 
 FINDING: {FINDING}
@@ -51,3 +51,8 @@ OUTPUT (Valid JSON Only):
   "why": "Explanation of the risk to the startup."
 }
 `;
+
+module.exports = {
+  HACKER_BRAIN_PROMPT,
+  REMEDIATION_GURU_PROMPT
+};

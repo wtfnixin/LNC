@@ -18,8 +18,10 @@ function App() {
     try {
       const response = await axios.post('/api/scan', { url });
       setReport(response.data);
-    } catch (err) {
-      setLogs(prev => [...prev, '[ERROR] Scan failed. Check backend connection.']);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.error || err.message || 'Scan failed.';
+      setLogs(prev => [...prev, `[ERROR] ${errorMessage}`]);
+      setReport({ error: errorMessage });
     } finally {
       setScanning(false);
     }
@@ -108,7 +110,7 @@ function App() {
           {/* Report Display */}
           <div className="lg:col-span-2 space-y-6">
             <AnimatePresence>
-              {report ? (
+              {report && typeof report === 'object' && !report.error && Array.isArray(report.vulnerabilities) ? (
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -125,40 +127,52 @@ function App() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                       <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-lg">
                         <p className="text-[10px] uppercase font-bold text-red-500/60 mb-1">Risk Score</p>
-                        <p className="text-3xl font-bold text-red-500">{report.overall_score}/100</p>
+                        <p className="text-3xl font-bold text-red-500">{report.overall_score || 0}/100</p>
                       </div>
                       <div className="bg-cyber-gold/10 border border-cyber-gold/30 p-4 rounded-lg">
                         <p className="text-[10px] uppercase font-bold text-cyber-gold/60 mb-1">Grade</p>
-                        <p className="text-3xl font-bold text-cyber-gold">{report.grade}</p>
+                        <p className="text-3xl font-bold text-cyber-gold">{report.grade || 'N/A'}</p>
                       </div>
                       <div className="bg-cyber-green/10 border border-cyber-green/30 p-4 rounded-lg">
                         <p className="text-[10px] uppercase font-bold text-cyber-green/60 mb-1">Exploits Found</p>
-                        <p className="text-3xl font-bold text-cyber-green">{report.vulnerabilities.length}</p>
+                        <p className="text-3xl font-bold text-cyber-green">{report.vulnerabilities?.length || 0}</p>
                       </div>
                     </div>
 
                     <div className="space-y-4">
                       <h3 className="text-sm font-bold uppercase tracking-widest text-cyber-green/60 border-b border-cyber-green/10 pb-2">Technical Findings</h3>
-                      {report.vulnerabilities.map((v: any, i: number) => (
+                      {(report.vulnerabilities || []).map((v: any, i: number) => (
                         <div key={i} className="bg-black/40 border border-cyber-green/10 p-4 rounded-lg hover:border-cyber-green/30 transition-all">
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-cyber-green">{v.title}</h4>
+                            <h4 className="font-bold text-cyber-green">{v?.title || 'Unknown Vulnerability'}</h4>
                             <span className={`text-[9px] px-2 py-0.5 rounded font-bold uppercase ${
-                              v.severity === 'CRITICAL' ? 'bg-red-500 text-white' : 'bg-cyber-gold text-black'
+                              v?.severity === 'CRITICAL' ? 'bg-red-500 text-white' : 'bg-cyber-gold text-black'
                             }`}>
-                              {v.severity}
+                              {v?.severity || 'LOW'}
                             </span>
                           </div>
-                          <p className="text-xs text-cyber-green/70 mb-4">{v.description}</p>
+                          <p className="text-xs text-cyber-green/70 mb-4">{v?.description || 'No description provided.'}</p>
                           <div className="bg-black p-3 rounded border border-cyber-green/5">
                             <p className="text-[10px] uppercase font-bold text-cyber-green/40 mb-2">Remediation Fix</p>
-                            <code className="text-[10px] text-cyber-green/90 whitespace-pre-wrap">{v.fix}</code>
+                            <code className="text-[10px] text-cyber-green/90 whitespace-pre-wrap">{v?.fix || 'Manual review required.'}</code>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </motion.div>
+              ) : report && typeof report === 'object' && report.error ? (
+                <div className="h-full flex flex-col items-center justify-center opacity-80 py-20 bg-red-500/5 rounded-xl border border-dashed border-red-500/20">
+                  <AlertTriangle className="w-20 h-20 mb-4 text-red-500" />
+                  <p className="font-bold uppercase tracking-widest text-red-500">Scan Failed</p>
+                  <p className="text-[10px] text-red-500/70">{report.error}</p>
+                </div>
+              ) : report ? (
+                 <div className="h-full flex flex-col items-center justify-center opacity-80 py-20 bg-cyber-gold/5 rounded-xl border border-dashed border-cyber-gold/20">
+                  <AlertTriangle className="w-20 h-20 mb-4 text-cyber-gold" />
+                  <p className="font-bold uppercase tracking-widest text-cyber-gold">Invalid Response structure</p>
+                  <p className="text-[10px] text-cyber-gold/70">The Red Team agent generated a malformed report.</p>
+                </div>
               ) : (
                 <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 bg-cyber-green/5 rounded-xl border border-dashed border-cyber-green/20">
                   <Shield className="w-20 h-20 mb-4" />

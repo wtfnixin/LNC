@@ -33,20 +33,35 @@ app.post('/api/scan', async (req, res) => {
     const vector = await generateAttackVector(surface);
     console.log(`[SYSTEM] AI Reasoning: ${vector.attacks.length} potential vulnerabilities identified.`);
 
-    // 3. Generating Fixes
-    const fullVulnerabilities = await Promise.all(
-      vector.attacks.map(async (v) => {
+    // Helper function to sleep to avoid rate limits
+    const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+    // 3. Generating Fixes (Sequentially to avoid rate limits)
+    const fullVulnerabilities = [];
+    for (const v of vector.attacks) {
+      try {
+        console.log(`[SYSTEM] Generating fix for: ${v.title}`);
         const fix = await generateFix(v, surface);
-        return {
+        fullVulnerabilities.push({
           ...v,
           title: fix.title,
           description: fix.description,
           severity: fix.severity,
           fix: fix.fix,
           why: fix.why
-        };
-      })
-    );
+        });
+        // Sleep for 2 seconds to avoid blasting the Gemini free tier limit
+        await delay(2000);
+      } catch (err) {
+         console.warn(`[WARNING] Failed to generate fix for ${v.title}. Skipping fix to continue scan. Error: ${err.message}`);
+         fullVulnerabilities.push({
+          ...v,
+          description: v.tactic,
+          fix: "Manual remediation required. API rate limit exceeded.",
+          why: "N/A"
+         });
+      }
+    }
 
     // 4. Final Score & Grade Calculation
     const overallScore = Math.floor(Math.random() * 40) + 40; // Simulated for now
@@ -61,7 +76,7 @@ app.post('/api/scan', async (req, res) => {
     res.json(report);
   } catch (err) {
     console.error('[SCAN FAILED]', err);
-    res.status(500).json({ error: 'Scan failed internally.' });
+    res.status(500).json({ error: err.message || 'Scan failed internally.' });
   }
 });
 

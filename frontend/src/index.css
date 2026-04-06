@@ -1,8 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
+@theme {
+  --color-cyber-dark: #0a0a0a;
+  --color-cyber-green: #00ff41;
+  --color-cyber-gold: #d4af37;
+  --color-cyber-red: #ff0000;
+}:root {
   background-color: #050505;
   color: #00ff41;
 }

@@ -20,6 +20,7 @@ async function generateAttackVector(surface) {
       }
     ],
     model: "llama-3.3-70b-versatile",
+    temperature: 0.1,
     response_format: { type: "json_object" }
   });
 
@@ -41,6 +42,7 @@ async function generateFix(vulnerability, surface) {
       }
     ],
     model: "llama-3.1-8b-instant",
+    temperature: 0.1,
     response_format: { type: "json_object" }
   });
 

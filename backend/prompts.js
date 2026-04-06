@@ -22,7 +22,7 @@ OUTPUT FORMAT (Valid JSON Only):
     {
       "title": "Vulnerability Title (e.g., Potential Cross-Site Scripting)",
       "severity": "LOW | MEDIUM | HIGH | CRITICAL",
-      "target": "The specific URL or input field",
+      "target": "EXACT LOCATION OF FLAW: specify the exact URL, input field name (e.g., 'email input'), or endpoint",
       "tactic": "Describe the hacking technique (e.g., Reflected XSS via 'q' parameter)",
       "payload_template": "A string or data structure to use as an exploit",
       "verification_marker": "What response string or status code confirms the hit?"

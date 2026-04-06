@@ -1,0 +1,182 @@
+import React, { useState, useEffect } from 'react';
+import { Shield, Search, Terminal, AlertTriangle, CheckCircle, FileText, Loader2, Zap } from 'lucide-react';
+import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
+
+function App() {
+  const [url, setUrl] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [logs, setLogs] = useState<string[]>([]);
+  const [report, setReport] = useState<any>(null);
+
+  const startScan = async () => {
+    if (!url) return;
+    setScanning(true);
+    setLogs(['[SYSTEM] Initializing LNC Red Team Agent...', `[SYSTEM] Target: ${url}`]);
+    setReport(null);
+
+    try {
+      const response = await axios.post('/api/scan', { url });
+      setReport(response.data);
+    } catch (err) {
+      setLogs(prev => [...prev, '[ERROR] Scan failed. Check backend connection.']);
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen w-full bg-black text-cyber-green p-4 md:p-8 selection:bg-cyber-green selection:text-black">
+      <div className="max-w-6xl mx-auto space-y-8">
+        
+        {/* Header */}
+        <header className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-cyber-green/20 pb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-cyber-green/10 rounded-lg border border-cyber-green/30 animate-pulse">
+              <Shield className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tighter glitch-text">LNC RED TEAM</h1>
+              <p className="text-xs text-cyber-green/60 uppercase tracking-widest">Autonomous Startup Security Agent</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4 bg-cyber-green/5 p-2 rounded-full border border-cyber-green/20 px-4">
+            <span className="flex h-2 w-2 rounded-full bg-cyber-green animate-ping" />
+            <span className="text-[10px] font-bold uppercase">System Online</span>
+          </div>
+        </header>
+
+        {/* Input Section */}
+        <section className="cyber-panel p-6 rounded-xl border-l-4 border-l-cyber-green">
+          <div className="flex flex-col gap-4">
+            <label className="text-sm font-bold uppercase tracking-wider text-cyber-green/80 flex items-center gap-2">
+              <Search className="w-4 h-4" /> Enter Target URL
+            </label>
+            <div className="flex flex-col md:flex-row gap-4">
+              <input 
+                type="text" 
+                placeholder="https://your-startup.com"
+                className="flex-1 bg-black/50 border border-cyber-green/30 rounded-lg px-4 py-3 text-cyber-green focus:outline-none focus:border-cyber-green transition-all placeholder:text-cyber-green/20"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                disabled={scanning}
+              />
+              <button 
+                onClick={startScan}
+                disabled={scanning || !url}
+                className={`flex items-center justify-center gap-2 px-8 py-3 rounded-lg font-bold uppercase tracking-tighter transition-all ${
+                  scanning 
+                    ? 'bg-cyber-green/20 text-cyber-green/40 cursor-not-allowed' 
+                    : 'bg-cyber-green text-black hover:bg-cyber-green/90 active:scale-95 shadow-[0_0_20px_rgba(0,255,65,0.3)]'
+                }`}
+              >
+                {scanning ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
+                {scanning ? 'Hunting...' : 'Launch Attack'}
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Terminal Logs */}
+          <div className="lg:col-span-1 cyber-panel flex flex-col h-[500px] rounded-xl overflow-hidden">
+            <div className="bg-cyber-green/10 p-3 border-b border-cyber-green/20 flex items-center gap-2">
+              <Terminal className="w-4 h-4" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Live Attack Feed</span>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 font-mono text-[11px] leading-relaxed">
+              {logs.map((log, i) => (
+                <div key={i} className={log.includes('[ERROR]') ? 'text-red-500' : 'text-cyber-green/80'}>
+                  {log}
+                </div>
+              ))}
+              {scanning && (
+                <div className="flex items-center gap-2 text-cyber-green/40 italic animate-pulse">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Analyzing server response headers...
+                </div>
+              )}
+              {!scanning && logs.length === 0 && (
+                <div className="text-cyber-green/20 text-center mt-20 italic">
+                  Systems ready. Waiting for target authorization...
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Report Display */}
+          <div className="lg:col-span-2 space-y-6">
+            <AnimatePresence>
+              {report ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  <div className="cyber-panel p-6 rounded-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <FileText className="w-24 h-24" />
+                    </div>
+                    <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
+                      <CheckCircle className="w-6 h-6 text-cyber-green" /> Vulnerability Assessment Complete
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                      <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-lg">
+                        <p className="text-[10px] uppercase font-bold text-red-500/60 mb-1">Risk Score</p>
+                        <p className="text-3xl font-bold text-red-500">{report.overall_score}/100</p>
+                      </div>
+                      <div className="bg-cyber-gold/10 border border-cyber-gold/30 p-4 rounded-lg">
+                        <p className="text-[10px] uppercase font-bold text-cyber-gold/60 mb-1">Grade</p>
+                        <p className="text-3xl font-bold text-cyber-gold">{report.grade}</p>
+                      </div>
+                      <div className="bg-cyber-green/10 border border-cyber-green/30 p-4 rounded-lg">
+                        <p className="text-[10px] uppercase font-bold text-cyber-green/60 mb-1">Exploits Found</p>
+                        <p className="text-3xl font-bold text-cyber-green">{report.vulnerabilities.length}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-bold uppercase tracking-widest text-cyber-green/60 border-b border-cyber-green/10 pb-2">Technical Findings</h3>
+                      {report.vulnerabilities.map((v: any, i: number) => (
+                        <div key={i} className="bg-black/40 border border-cyber-green/10 p-4 rounded-lg hover:border-cyber-green/30 transition-all">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-bold text-cyber-green">{v.title}</h4>
+                            <span className={`text-[9px] px-2 py-0.5 rounded font-bold uppercase ${
+                              v.severity === 'CRITICAL' ? 'bg-red-500 text-white' : 'bg-cyber-gold text-black'
+                            }`}>
+                              {v.severity}
+                            </span>
+                          </div>
+                          <p className="text-xs text-cyber-green/70 mb-4">{v.description}</p>
+                          <div className="bg-black p-3 rounded border border-cyber-green/5">
+                            <p className="text-[10px] uppercase font-bold text-cyber-green/40 mb-2">Remediation Fix</p>
+                            <code className="text-[10px] text-cyber-green/90 whitespace-pre-wrap">{v.fix}</code>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 bg-cyber-green/5 rounded-xl border border-dashed border-cyber-green/20">
+                  <Shield className="w-20 h-20 mb-4" />
+                  <p className="font-bold uppercase tracking-widest">No Active Reports</p>
+                  <p className="text-[10px]">Launch an attack to see audit results</p>
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="text-center text-cyber-green/30 text-[10px] uppercase tracking-widest pt-8 border-t border-cyber-green/10">
+          Built with speed by Antigravity AI &bull; Groq Llama 3 Engine &bull; Playwright Red-Team Core
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+export default App;

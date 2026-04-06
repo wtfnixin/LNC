@@ -14,7 +14,7 @@ function App() {
   const startScan = async () => {
     if (!url) return;
     setScanning(true);
-    setLogs(['[SYSTEM] Initializing Sentri Red Team Agent...', `[SYSTEM] Target: ${url}`]);
+    setLogs(['[SYSTEM] Initializing Sentri AI Agent...', `[SYSTEM] Target: ${url}`]);
     setReport(null);
 
     try {
@@ -36,7 +36,7 @@ function App() {
     
     doc.setFontSize(22);
     doc.setTextColor(0, 150, 0);
-    doc.text("SENTRI RED TEAM - SECURITY AUDIT", 14, 22);
+    doc.text("SENTRI AI - SECURITY AUDIT", 14, 22);
     
     doc.setFontSize(12);
     doc.setTextColor(50, 50, 50);
@@ -97,7 +97,7 @@ function App() {
               <Shield className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tighter glitch-text">SENTRI RED TEAM</h1>
+              <h1 className="text-3xl font-bold tracking-tighter glitch-text">SENTRI AI</h1>
               <p className="text-xs text-cyber-green/60 uppercase tracking-widest">Autonomous Startup Security Agent</p>
             </div>
           </div>
@@ -239,7 +239,7 @@ function App() {
                  <div className="h-full flex flex-col items-center justify-center opacity-80 py-20 bg-cyber-gold/5 rounded-xl border border-dashed border-cyber-gold/20">
                   <AlertTriangle className="w-20 h-20 mb-4 text-cyber-gold" />
                   <p className="font-bold uppercase tracking-widest text-cyber-gold">Invalid Response structure</p>
-                  <p className="text-[10px] text-cyber-gold/70">The Red Team agent generated a malformed report.</p>
+                  <p className="text-[10px] text-cyber-gold/70">The Sentri AI agent generated a malformed report.</p>
                 </div>
               ) : (
                 <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 bg-cyber-green/5 rounded-xl border border-dashed border-cyber-green/20">

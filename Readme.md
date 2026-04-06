@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://img.shields.io/badge/Security-Red_Team-00FF41?style=for-the-badge&logo=shield&logoColor=black" alt="Red Team Badge" />
+  <img src="https://img.shields.io/badge/Security-AI-00FF41?style=for-the-badge&logo=shield&logoColor=black" alt="AI Agent Badge" />
   <img src="https://img.shields.io/badge/Engine-LLaMA_3-black?style=for-the-badge&logo=meta&logoColor=00FF41" alt="LLaMA Badge" />
   <img src="https://img.shields.io/badge/Stack-React_|_Node.js-black?style=for-the-badge&logo=react&logoColor=00FF41" alt="Stack Badge" />
 </div>
@@ -7,11 +7,11 @@
 <br />
 
 <div align="center">
-  <h1 align="center">SENTRI RED TEAM</h1>
+  <h1 align="center">SENTRI AI</h1>
   <p align="center">
     <strong>Autonomous Startup Security Agent</strong>
     <br />
-    A devastatingly effective, AI-driven penetration testing platform designed to emulate a dedicated human Red Team.
+    A devastatingly effective, automated penetration testing platform designed to emulate a dedicated human security specialist.
   </p>
 </div>
 

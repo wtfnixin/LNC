@@ -81,5 +81,5 @@ app.post('/api/scan', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`[SERVER] Sentri Red Team AI running on port ${PORT}`);
+  console.log(`[SERVER] Sentri AI running on port ${PORT}`);
 });

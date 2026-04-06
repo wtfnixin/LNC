@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Search, Terminal, AlertTriangle, CheckCircle, FileText, Loader2, Zap } from 'lucide-react';
+import { Shield, Search, Terminal, AlertTriangle, CheckCircle, FileText, Loader2, Zap, Download } from 'lucide-react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+
+import { jsPDF } from 'jspdf';
 
 function App() {
   const [url, setUrl] = useState('');
@@ -25,6 +27,63 @@ function App() {
     } finally {
       setScanning(false);
     }
+  };
+
+  const downloadReport = () => {
+    if (!report) return;
+    
+    const doc = new jsPDF();
+    
+    doc.setFontSize(22);
+    doc.setTextColor(0, 150, 0);
+    doc.text("LNC RED TEAM - SECURITY AUDIT", 14, 22);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50);
+    doc.text(`Target URL: ${url}`, 14, 32);
+    doc.text(`Overall Risk Score: ${report.overall_score}/100`, 14, 40);
+    doc.text(`Security Grade: ${report.grade || 'N/A'}`, 14, 48);
+    doc.text(`Total Vulnerabilities Found: ${report.vulnerabilities?.length || 0}`, 14, 56);
+    
+    doc.setDrawColor(0, 150, 0);
+    doc.setLineWidth(0.5);
+    doc.line(14, 60, 196, 60);
+
+    let y = 70;
+    
+    (report.vulnerabilities || []).forEach((v: any, index: number) => {
+      if (y > 260) {
+        doc.addPage();
+        y = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(v.severity === 'CRITICAL' ? 220 : v.severity === 'HIGH' ? 200 : 150, 0, 0);
+      doc.text(`${index + 1}. ${v.title || 'Unknown Vulnerability'} [${v.severity || 'LOW'}]`, 14, y);
+      y += 8;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(80, 80, 80);
+      
+      const splitDesc = doc.splitTextToSize(`Description: ${v.description || 'N/A'}`, 180);
+      doc.text(splitDesc, 14, y);
+      y += (splitDesc.length * 5) + 4;
+      
+      if (y > 260) {
+        doc.addPage();
+        y = 20;
+      }
+      
+      doc.setFont("courier", "normal");
+      doc.setTextColor(0, 100, 0);
+      const splitFix = doc.splitTextToSize(`Remediation:\n${v.fix || 'Manual review required.'}`, 180);
+      doc.text(splitFix, 14, y);
+      y += (splitFix.length * 5) + 12;
+      
+      doc.setFont("helvetica", "normal");
+    });
+
+    doc.save(`lnc_cyber_audit_${new Date().getTime()}.pdf`);
   };
 
   return (
@@ -120,9 +179,18 @@ function App() {
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <FileText className="w-24 h-24" />
                     </div>
-                    <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
-                      <CheckCircle className="w-6 h-6 text-cyber-green" /> Vulnerability Assessment Complete
-                    </h2>
+                    
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                      <h2 className="text-xl font-bold flex items-center gap-2">
+                        <CheckCircle className="w-6 h-6 text-cyber-green" /> Vulnerability Assessment Complete
+                      </h2>
+                      <button 
+                        onClick={downloadReport}
+                        className="flex items-center gap-2 px-4 py-2 bg-cyber-green/10 border border-cyber-green/30 rounded text-cyber-green hover:bg-cyber-green hover:text-black transition-all text-xs font-bold uppercase"
+                      >
+                        <Download className="w-4 h-4" /> Download Full Report
+                      </button>
+                    </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                       <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-lg">

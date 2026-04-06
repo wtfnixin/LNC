@@ -14,7 +14,7 @@ function App() {
   const startScan = async () => {
     if (!url) return;
     setScanning(true);
-    setLogs(['[SYSTEM] Initializing LNC Red Team Agent...', `[SYSTEM] Target: ${url}`]);
+    setLogs(['[SYSTEM] Initializing Sentri Red Team Agent...', `[SYSTEM] Target: ${url}`]);
     setReport(null);
 
     try {
@@ -36,7 +36,7 @@ function App() {
     
     doc.setFontSize(22);
     doc.setTextColor(0, 150, 0);
-    doc.text("LNC RED TEAM - SECURITY AUDIT", 14, 22);
+    doc.text("SENTRI RED TEAM - SECURITY AUDIT", 14, 22);
     
     doc.setFontSize(12);
     doc.setTextColor(50, 50, 50);
@@ -83,7 +83,7 @@ function App() {
       doc.setFont("helvetica", "normal");
     });
 
-    doc.save(`lnc_cyber_audit_${new Date().getTime()}.pdf`);
+    doc.save(`sentri_cyber_audit_${new Date().getTime()}.pdf`);
   };
 
   return (
@@ -97,7 +97,7 @@ function App() {
               <Shield className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tighter glitch-text">LNC RED TEAM</h1>
+              <h1 className="text-3xl font-bold tracking-tighter glitch-text">SENTRI RED TEAM</h1>
               <p className="text-xs text-cyber-green/60 uppercase tracking-widest">Autonomous Startup Security Agent</p>
             </div>
           </div>

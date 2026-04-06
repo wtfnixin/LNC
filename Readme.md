@@ -7,7 +7,7 @@
 <br />
 
 <div align="center">
-  <h1 align="center">LNC RED TEAM</h1>
+  <h1 align="center">SENTRI RED TEAM</h1>
   <p align="center">
     <strong>Autonomous Startup Security Agent</strong>
     <br />
@@ -19,7 +19,7 @@
 
 ## ⚡ Overview
 
-LNC Red Team is an intelligent, automated vulnerability scanning dashboard built for startups. Leveraging the power of Playwright for deep structural web crawling and **Groq's Llama 3 models** for zero-latency deductive security reasoning, the platform automatically maps attack surfaces, hypothesizes vulnerabilities, and generates developer-ready remediation payloads.
+Sentri is an intelligent, automated vulnerability scanning dashboard built for startups. Leveraging the power of Playwright for deep structural web crawling and **Groq's Llama 3 models** for zero-latency deductive security reasoning, the platform automatically maps attack surfaces, hypothesizes vulnerabilities, and generates developer-ready remediation payloads.
 
 ## 🚀 Key Features
 
@@ -77,14 +77,14 @@ npm install
 npm run dev
 ```
 
-You can now access the LNC Red Team dashboard locally at `http://localhost:5173`.
+You can now access the Sentri dashboard locally at `http://localhost:5173`.
 
 ---
 
 ## 🛡️ Usage Warning & Disclaimer
 
 **For Authorized Testing Only.** 
-This intelligent agent is designed specifically for defensive evaluation and securing startup infrastructure. Do not deploy the LNC Red Team crawler against any target network, application, or perimeter that you do not own or possess explicit written authorization to audit. 
+This intelligent agent is designed specifically for defensive evaluation and securing startup infrastructure. Do not deploy the Sentri crawler against any target network, application, or perimeter that you do not own or possess explicit written authorization to audit. 
 
 ---
 

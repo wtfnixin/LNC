@@ -40,6 +40,33 @@ Sentri is an intelligent, automated vulnerability scanning dashboard built for s
 
 ---
 
+## 📂 Project Structure
+
+```text
+LNC/
+├── backend/                  # Node.js / Express server
+│   ├── index.js              # Main server entrypoint and API routes
+│   ├── crawler.js            # Playwright web crawling logic
+│   ├── attacker.js           # Agent inference & payload generation
+│   ├── prompts.js            # Heavily-constrained hacker prompts for Groq
+│   ├── package.json          # Backend dependencies
+│   └── .env                  # Environment configs (Port, Groq API Key)
+├── frontend/                 # React & Vite client application
+│   ├── src/
+│   │   ├── App.tsx           # Main Dashboard UI and scan visualization
+│   │   ├── index.css         # Tailwind CSS v4 & Cyberpunk aesthetic
+│   │   ├── main.tsx          # React DOM configuration
+│   │   └── vite-env.d.ts     # Vite environment types
+│   ├── index.html            # Core Vite HTML template
+│   ├── vite.config.ts        # Vite configuration rules
+│   ├── tsconfig.json         # TypeScript configurations
+│   └── package.json          # Frontend dependencies
+├── ppt.txt                   # Presentation Outline
+└── Readme.md                 # Documentation
+```
+
+---
+
 ## ⚙️ Installation & Setup
 
 ### Prerequisites

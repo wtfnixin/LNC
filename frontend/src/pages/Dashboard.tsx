@@ -28,7 +28,7 @@ export default function Dashboard() {
     setReport(null);
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+      const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
       const response = await axios.post(`${API_BASE_URL}/api/scan`, { url });
       setReport(response.data);
     } catch (err: any) {

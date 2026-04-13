@@ -10,6 +10,17 @@ export default function Dashboard() {
   const [logs, setLogs] = useState<string[]>([]);
   const [report, setReport] = useState<any>(null);
 
+  // Safely stringify objects to prevent React rendering crashes (which result in a blank screen)
+  const safeRender = (val: any, fallback: string = 'N/A') => {
+    if (!val) return fallback;
+    if (typeof val === 'string' || typeof val === 'number') return val;
+    try {
+      return JSON.stringify(val, null, 2);
+    } catch (e) {
+      return fallback;
+    }
+  };
+
   const startScan = async () => {
     if (!url) return;
     setScanning(true);
@@ -17,7 +28,8 @@ export default function Dashboard() {
     setReport(null);
 
     try {
-      const response = await axios.post('/api/scan', { url });
+      const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+      const response = await axios.post(`${API_BASE_URL}/api/scan`, { url });
       setReport(response.data);
     } catch (err: any) {
       const errorMessage = err.response?.data?.error || err.message || 'Scan failed.';
@@ -192,23 +204,23 @@ export default function Dashboard() {
                     {(report.vulnerabilities || []).map((v: any, i: number) => (
                       <div key={i} className="bg-black/40 border border-cyber-yellow/10 p-4 rounded-lg hover:border-cyber-yellow/30 transition-all">
                         <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-bold text-cyber-yellow">{v?.title || 'Unknown Vulnerability'}</h4>
+                          <h4 className="font-bold text-cyber-yellow">{safeRender(v?.title, 'Unknown Vulnerability')}</h4>
                           <span className={`text-[9px] px-2 py-0.5 rounded font-bold uppercase ${
                             v?.severity === 'CRITICAL' ? 'bg-red-500 text-white' : 'bg-cyber-gold text-black'
                           }`}>
-                            {v?.severity || 'LOW'}
+                            {safeRender(v?.severity, 'LOW')}
                           </span>
                         </div>
                         {v?.target && (
                           <div className="mb-2 italic border-l-2 border-cyber-yellow/30 pl-2">
                             <span className="text-[10px] uppercase font-bold text-cyber-yellow/50 tracking-widest">Location / Target: </span>
-                            <span className="text-xs text-cyber-yellow/90 font-mono">{v.target}</span>
+                            <span className="text-xs text-cyber-yellow/90 font-mono">{safeRender(v.target)}</span>
                           </div>
                         )}
-                        <p className="text-xs text-cyber-yellow/70 mb-4">{v?.description || 'No description provided.'}</p>
+                        <p className="text-xs text-cyber-yellow/70 mb-4">{safeRender(v?.description, 'No description provided.')}</p>
                         <div className="bg-black p-3 rounded border border-cyber-yellow/5">
                           <p className="text-[10px] uppercase font-bold text-cyber-yellow/40 mb-2">Remediation Fix</p>
-                          <code className="text-[10px] text-cyber-yellow/90 whitespace-pre-wrap">{v?.fix || 'Manual review required.'}</code>
+                          <code className="text-[10px] text-cyber-yellow/90 whitespace-pre-wrap">{safeRender(v?.fix, 'Manual review required.')}</code>
                         </div>
                       </div>
                     ))}
@@ -219,7 +231,7 @@ export default function Dashboard() {
               <div className="h-full flex flex-col items-center justify-center opacity-80 py-20 bg-red-500/5 rounded-xl border border-dashed border-red-500/20">
                 <AlertTriangle className="w-20 h-20 mb-4 text-red-500" />
                 <p className="font-bold uppercase tracking-widest text-red-500">Scan Failed</p>
-                <p className="text-[10px] text-red-500/70">{report.error}</p>
+                <p className="text-[10px] text-red-500/70">{safeRender(report.error)}</p>
               </div>
             ) : report ? (
                <div className="h-full flex flex-col items-center justify-center opacity-80 py-20 bg-cyber-gold/5 rounded-xl border border-dashed border-cyber-gold/20">

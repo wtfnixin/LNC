@@ -15,8 +15,9 @@
   </p>
 </div>
 
----
 
+Live Demo: https://sentri-ai-one.vercel.app/
+---
 ## ⚡ Overview
 
 **SENTRI AI** is an intelligent, automated vulnerability scanning dashboard built from the ground up to protect startup infrastructure. By bridging traditional web-scraping methodologies with cutting-edge Large Language Models, Sentri acts as a literal "Red Team in a box"—mapping attack surfaces, hypothesizing vulnerabilities based on contextual clues, and generating developer-ready remediation payloads.
